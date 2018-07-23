@@ -1,0 +1,72 @@
+<html>
+<script type="text/javascript" src="https://gitcdn.xyz/cdn/risevision/rise-js-sdk/master/dist/browser/index.js"></script>
+
+<body>
+	<p id="p1"></p>
+	<button onclick="main()">Start</button>
+<script>
+	rise.nodeAddress = 'https://wallet.rise.vision';
+  
+
+	function get_next_forger_pubkey(){
+		rise.delegates.getNextForgers(1, function(error, result) {
+  		if (!error) {
+    		console.log(result["currentBlock"]["generatorPublicKey"]);
+    		delegate_pubkey = result["currentBlock"]["generatorPublicKey"];
+    		return delegate_pubkey;
+
+    		//document.getElementById("p1").innerHTML = result["height"];
+  		} else {
+    		console.log('error: ', error);
+  		}
+
+		});
+	}	
+
+	function get_next_forger(){
+		pubkey=get_next_forger_pubkey()
+		rise.delegates.getByPublicKey(pubkey, function(error, result) {
+  		if (!error) {
+  			console.log(result);
+    		//document.getElementById("p1").innerHTML = result["height"];
+  		} else {
+    		console.log('error: ', error);
+  		}
+
+		});
+	}
+
+	function get_height(){
+  		rise.blocks.getHeight(function(error, result) {
+  		if (!error) {
+    		//console.log(result);
+    		document.getElementById("p1").innerHTML = result["height"];
+    		height = result["height"];
+    		return height;
+  		} else {
+    		console.log('error: ', error);
+  		}
+
+		});
+	}	
+
+	function get_tx(){
+  		rise.transactions.getList({fromHeight: get_height()}, function(error, result) {
+  		if (!error) {
+    		console.log(result);
+  		} else {
+    		console.log('error: ', error);
+  		}
+
+		});
+	}
+
+	function main(){
+		get_height()
+		//get_next_forger()
+		get_tx()
+	}
+</script>
+
+</body>
+</html>
